@@ -1,0 +1,532 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FroAsyncDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="app_option">
+          <Key>
+            <PropertyRef Name="option_id" />
+          </Key>
+          <Property Name="option_id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="option_value" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="update_con_str">
+          <Key>
+            <PropertyRef Name="up_con_id" />
+          </Key>
+          <Property Name="up_con_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="con_str" Type="nvarchar" MaxLength="255" />
+          <Property Name="con_desc" Type="nvarchar" MaxLength="255" />
+          <Property Name="db_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="update_cube">
+          <Key>
+            <PropertyRef Name="cube_id" />
+          </Key>
+          <Property Name="cube_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="connectionstring" Type="nvarchar" MaxLength="100" />
+          <Property Name="database_name" Type="nvarchar" MaxLength="50" />
+          <Property Name="enable" Type="bit" />
+        </EntityType>
+        <EntityType Name="update_op_config">
+          <Key>
+            <PropertyRef Name="op_id" />
+          </Key>
+          <Property Name="op_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="op_order" Type="int" />
+          <Property Name="op_desc" Type="nvarchar" MaxLength="255" />
+          <Property Name="src_con_str" Type="int" />
+          <Property Name="src_tbl_name" Type="nvarchar" MaxLength="4000" />
+          <Property Name="src_cols" Type="nvarchar" MaxLength="4000" />
+          <Property Name="src_filter" Type="nvarchar" MaxLength="4000" />
+          <Property Name="src_filter_val" Type="nvarchar" MaxLength="4000" />
+          <Property Name="dst_con_str" Type="int" />
+          <Property Name="dst_tbl_name" Type="nvarchar" MaxLength="4000" />
+          <Property Name="dst_cols" Type="nvarchar" MaxLength="4000" />
+          <Property Name="dst_filter" Type="nvarchar" MaxLength="4000" />
+          <Property Name="dst_filter_val" Type="nvarchar" MaxLength="4000" />
+          <Property Name="enable" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="update_op_conv">
+          <Key>
+            <PropertyRef Name="conv_id" />
+          </Key>
+          <Property Name="conv_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="op_id" Type="int" Nullable="false" />
+          <Property Name="col_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="conversion" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="update_op_dyn">
+          <Key>
+            <PropertyRef Name="up_dyn_id" />
+          </Key>
+          <Property Name="up_dyn_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="op_id" Type="int" />
+          <Property Name="src_order" Type="int" />
+          <Property Name="src_col_name" Type="nvarchar" MaxLength="50" />
+          <Property Name="src_col_val" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="update_op_key">
+          <Key>
+            <PropertyRef Name="update_key_id" />
+          </Key>
+          <Property Name="update_key_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="op_id" Type="int" />
+          <Property Name="src_col_name" Type="nvarchar" MaxLength="50" />
+          <Property Name="dst_col_name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="update_op_log">
+          <Key>
+            <PropertyRef Name="op_log" />
+          </Key>
+          <Property Name="op_log" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="log_date" Type="datetime" />
+          <Property Name="op_id" Type="int" />
+          <Property Name="log_result" Type="nvarchar" MaxLength="20" />
+          <Property Name="eff_count" Type="int" />
+          <Property Name="log_msg" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK_update_op_config_update_con_str">
+          <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_con_str">
+              <PropertyRef Name="up_con_id" />
+            </Principal>
+            <Dependent Role="update_op_config">
+              <PropertyRef Name="src_con_str" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_update_op_config_update_con_str1">
+          <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_con_str">
+              <PropertyRef Name="up_con_id" />
+            </Principal>
+            <Dependent Role="update_op_config">
+              <PropertyRef Name="dst_con_str" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_update_op_conv_update_op_config">
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="update_op_conv" Type="Self.update_op_conv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_conv">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_update_op_dyn_update_op_config">
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="update_op_dyn" Type="Self.update_op_dyn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_dyn">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_update_op_key_update_op_config">
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="update_op_key" Type="Self.update_op_key" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_key">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_update_op_log_update_op_config">
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="0..1" />
+          <End Role="update_op_log" Type="Self.update_op_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_log">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FroAsyncDBModelStoreContainer">
+          <EntitySet Name="app_option" EntityType="Self.app_option" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="update_con_str" EntityType="Self.update_con_str" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="update_cube" EntityType="Self.update_cube" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="update_op_config" EntityType="Self.update_op_config" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="update_op_conv" EntityType="Self.update_op_conv" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="update_op_dyn" EntityType="Self.update_op_dyn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="update_op_key" EntityType="Self.update_op_key" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="update_op_log" EntityType="Self.update_op_log" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_update_op_config_update_con_str" Association="Self.FK_update_op_config_update_con_str">
+            <End Role="update_con_str" EntitySet="update_con_str" />
+            <End Role="update_op_config" EntitySet="update_op_config" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_op_config_update_con_str1" Association="Self.FK_update_op_config_update_con_str1">
+            <End Role="update_con_str" EntitySet="update_con_str" />
+            <End Role="update_op_config" EntitySet="update_op_config" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_op_conv_update_op_config" Association="Self.FK_update_op_conv_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_conv" EntitySet="update_op_conv" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_op_dyn_update_op_config" Association="Self.FK_update_op_dyn_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_dyn" EntitySet="update_op_dyn" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_op_key_update_op_config" Association="Self.FK_update_op_key_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_key" EntitySet="update_op_key" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_op_log_update_op_config" Association="Self.FK_update_op_log_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_log" EntitySet="update_op_log" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FroAsyncDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="update_con_str">
+          <Key>
+            <PropertyRef Name="up_con_id" />
+          </Key>
+          <Property Name="up_con_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="con_str" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="con_desc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="update_op_config" Relationship="Self.FK_update_op_config_update_con_str" FromRole="update_con_str" ToRole="update_op_config" />
+          <NavigationProperty Name="update_op_config1" Relationship="Self.FK_update_op_config_update_con_str1" FromRole="update_con_str" ToRole="update_op_config" />
+          <Property Name="db_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="update_op_config">
+          <Key>
+            <PropertyRef Name="op_id" />
+          </Key>
+          <Property Name="op_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="op_order" Type="Int32" />
+          <Property Name="src_con_str" Type="Int32" />
+          <Property Name="src_tbl_name" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="src_cols" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="src_filter" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="src_filter_val" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="dst_con_str" Type="Int32" />
+          <Property Name="dst_tbl_name" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="dst_cols" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="dst_filter" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="dst_filter_val" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="update_con_str" Relationship="Self.FK_update_op_config_update_con_str" FromRole="update_op_config" ToRole="update_con_str" />
+          <NavigationProperty Name="update_con_str1" Relationship="Self.FK_update_op_config_update_con_str1" FromRole="update_op_config" ToRole="update_con_str" />
+          <NavigationProperty Name="update_op_dyn" Relationship="Self.FK_update_op_dyn_update_op_config" FromRole="update_op_config" ToRole="update_op_dyn" />
+          <NavigationProperty Name="update_op_key" Relationship="FroAsyncDBModel.FK_update_op_key_update_op_config" FromRole="update_op_config" ToRole="update_op_key" />
+          <NavigationProperty Name="update_op_conv" Relationship="FroAsyncDBModel.FK_update_op_conv_update_op_config" FromRole="update_op_config" ToRole="update_op_conv" />
+          <Property Name="enable" Type="Boolean" Nullable="false" />
+          <Property Name="op_desc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="update_op_log" Relationship="FroAsyncDBModel.FK_update_op_log_update_op_config" FromRole="update_op_config" ToRole="update_op_log" />
+        </EntityType>
+        <EntityType Name="update_op_dyn">
+          <Key>
+            <PropertyRef Name="up_dyn_id" />
+          </Key>
+          <Property Name="up_dyn_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="op_id" Type="Int32" />
+          <Property Name="src_order" Type="Int32" />
+          <Property Name="src_col_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="src_col_val" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="update_op_config" Relationship="Self.FK_update_op_dyn_update_op_config" FromRole="update_op_dyn" ToRole="update_op_config" />
+        </EntityType>
+        <Association Name="FK_update_op_config_update_con_str">
+          <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_con_str">
+              <PropertyRef Name="up_con_id" />
+            </Principal>
+            <Dependent Role="update_op_config">
+              <PropertyRef Name="src_con_str" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_update_op_config_update_con_str1">
+          <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_con_str">
+              <PropertyRef Name="up_con_id" />
+            </Principal>
+            <Dependent Role="update_op_config">
+              <PropertyRef Name="dst_con_str" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_update_op_dyn_update_op_config">
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="update_op_dyn" Type="Self.update_op_dyn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_dyn">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FroAsyncDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="update_con_str" EntityType="Self.update_con_str" />
+          <EntitySet Name="update_op_config" EntityType="Self.update_op_config" />
+          <EntitySet Name="update_op_dyn" EntityType="Self.update_op_dyn" />
+          <AssociationSet Name="FK_update_op_config_update_con_str" Association="Self.FK_update_op_config_update_con_str">
+            <End Role="update_con_str" EntitySet="update_con_str" />
+            <End Role="update_op_config" EntitySet="update_op_config" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_op_config_update_con_str1" Association="Self.FK_update_op_config_update_con_str1">
+            <End Role="update_con_str" EntitySet="update_con_str" />
+            <End Role="update_op_config" EntitySet="update_op_config" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_op_dyn_update_op_config" Association="Self.FK_update_op_dyn_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_dyn" EntitySet="update_op_dyn" />
+          </AssociationSet>
+          <EntitySet Name="update_op_key" EntityType="FroAsyncDBModel.update_op_key" />
+          <AssociationSet Name="FK_update_op_key_update_op_config" Association="FroAsyncDBModel.FK_update_op_key_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_key" EntitySet="update_op_key" />
+          </AssociationSet>
+          <EntitySet Name="update_op_conv" EntityType="FroAsyncDBModel.update_op_conv" />
+          <AssociationSet Name="FK_update_op_conv_update_op_config" Association="FroAsyncDBModel.FK_update_op_conv_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_conv" EntitySet="update_op_conv" />
+          </AssociationSet>
+          <EntitySet Name="update_op_log" EntityType="FroAsyncDBModel.update_op_log" />
+          <AssociationSet Name="FK_update_op_log_update_op_config" Association="FroAsyncDBModel.FK_update_op_log_update_op_config">
+            <End Role="update_op_config" EntitySet="update_op_config" />
+            <End Role="update_op_log" EntitySet="update_op_log" />
+          </AssociationSet>
+          <EntitySet Name="app_option" EntityType="FroAsyncDBModel.app_option" />
+          <EntitySet Name="update_cube" EntityType="FroAsyncDBModel.update_cube" />
+        </EntityContainer>
+        <EntityType Name="update_op_key">
+          <Key>
+            <PropertyRef Name="update_key_id" />
+          </Key>
+          <Property Name="update_key_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="op_id" Type="Int32" />
+          <Property Name="src_col_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="dst_col_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="update_op_config" Relationship="FroAsyncDBModel.FK_update_op_key_update_op_config" FromRole="update_op_key" ToRole="update_op_config" />
+        </EntityType>
+        <Association Name="FK_update_op_key_update_op_config">
+          <End Type="FroAsyncDBModel.update_op_config" Role="update_op_config" Multiplicity="0..1" />
+          <End Type="FroAsyncDBModel.update_op_key" Role="update_op_key" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_key">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="update_op_conv">
+          <Key>
+            <PropertyRef Name="conv_id" />
+          </Key>
+          <Property Name="conv_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="op_id" Type="Int32" Nullable="false" />
+          <Property Name="col_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="conversion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="update_op_config" Relationship="FroAsyncDBModel.FK_update_op_conv_update_op_config" FromRole="update_op_conv" ToRole="update_op_config" />
+        </EntityType>
+        <Association Name="FK_update_op_conv_update_op_config">
+          <End Type="FroAsyncDBModel.update_op_config" Role="update_op_config" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="FroAsyncDBModel.update_op_conv" Role="update_op_conv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_conv">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="update_op_log">
+          <Key>
+            <PropertyRef Name="op_log" />
+          </Key>
+          <Property Name="op_log" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="log_date" Type="DateTime" Precision="3" />
+          <Property Name="op_id" Type="Int32" />
+          <Property Name="log_result" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="log_msg" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="update_op_config" Relationship="FroAsyncDBModel.FK_update_op_log_update_op_config" FromRole="update_op_log" ToRole="update_op_config" />
+          <Property Name="eff_count" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_update_op_log_update_op_config">
+          <End Type="FroAsyncDBModel.update_op_config" Role="update_op_config" Multiplicity="0..1" />
+          <End Type="FroAsyncDBModel.update_op_log" Role="update_op_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_op_config">
+              <PropertyRef Name="op_id" />
+            </Principal>
+            <Dependent Role="update_op_log">
+              <PropertyRef Name="op_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="app_option">
+          <Key>
+            <PropertyRef Name="option_id" />
+          </Key>
+          <Property Name="option_id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="option_value" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="update_cube">
+          <Key>
+            <PropertyRef Name="cube_id" />
+          </Key>
+          <Property Name="cube_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="connectionstring" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="database_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="enable" Type="Boolean" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FroAsyncDBModelStoreContainer" CdmEntityContainer="FroAsyncDBEntities">
+          <EntitySetMapping Name="update_con_str">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.update_con_str">
+              <MappingFragment StoreEntitySet="update_con_str">
+                <ScalarProperty Name="db_name" ColumnName="db_name" />
+                <ScalarProperty Name="up_con_id" ColumnName="up_con_id" />
+                <ScalarProperty Name="con_str" ColumnName="con_str" />
+                <ScalarProperty Name="con_desc" ColumnName="con_desc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="update_op_config">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_config">
+              <MappingFragment StoreEntitySet="update_op_config">
+                <ScalarProperty Name="op_desc" ColumnName="op_desc" />
+                <ScalarProperty Name="enable" ColumnName="enable" />
+                <ScalarProperty Name="op_id" ColumnName="op_id" />
+                <ScalarProperty Name="op_order" ColumnName="op_order" />
+                <ScalarProperty Name="src_con_str" ColumnName="src_con_str" />
+                <ScalarProperty Name="src_tbl_name" ColumnName="src_tbl_name" />
+                <ScalarProperty Name="src_cols" ColumnName="src_cols" />
+                <ScalarProperty Name="src_filter" ColumnName="src_filter" />
+                <ScalarProperty Name="src_filter_val" ColumnName="src_filter_val" />
+                <ScalarProperty Name="dst_con_str" ColumnName="dst_con_str" />
+                <ScalarProperty Name="dst_tbl_name" ColumnName="dst_tbl_name" />
+                <ScalarProperty Name="dst_cols" ColumnName="dst_cols" />
+                <ScalarProperty Name="dst_filter" ColumnName="dst_filter" />
+                <ScalarProperty Name="dst_filter_val" ColumnName="dst_filter_val" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="update_op_dyn">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_dyn">
+              <MappingFragment StoreEntitySet="update_op_dyn">
+                <ScalarProperty Name="up_dyn_id" ColumnName="up_dyn_id" />
+                <ScalarProperty Name="op_id" ColumnName="op_id" />
+                <ScalarProperty Name="src_order" ColumnName="src_order" />
+                <ScalarProperty Name="src_col_name" ColumnName="src_col_name" />
+                <ScalarProperty Name="src_col_val" ColumnName="src_col_val" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="update_op_key">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_key">
+              <MappingFragment StoreEntitySet="update_op_key">
+                <ScalarProperty Name="dst_col_name" ColumnName="dst_col_name" />
+                <ScalarProperty Name="src_col_name" ColumnName="src_col_name" />
+                <ScalarProperty Name="op_id" ColumnName="op_id" />
+                <ScalarProperty Name="update_key_id" ColumnName="update_key_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="update_op_conv">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_conv">
+              <MappingFragment StoreEntitySet="update_op_conv">
+                <ScalarProperty Name="conversion" ColumnName="conversion" />
+                <ScalarProperty Name="col_name" ColumnName="col_name" />
+                <ScalarProperty Name="op_id" ColumnName="op_id" />
+                <ScalarProperty Name="conv_id" ColumnName="conv_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="update_op_log">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_log">
+              <MappingFragment StoreEntitySet="update_op_log">
+                <ScalarProperty Name="eff_count" ColumnName="eff_count" />
+                <ScalarProperty Name="log_msg" ColumnName="log_msg" />
+                <ScalarProperty Name="log_result" ColumnName="log_result" />
+                <ScalarProperty Name="op_id" ColumnName="op_id" />
+                <ScalarProperty Name="log_date" ColumnName="log_date" />
+                <ScalarProperty Name="op_log" ColumnName="op_log" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="app_option">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.app_option">
+              <MappingFragment StoreEntitySet="app_option">
+                <ScalarProperty Name="option_value" ColumnName="option_value" />
+                <ScalarProperty Name="option_id" ColumnName="option_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="update_cube">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.update_cube">
+              <MappingFragment StoreEntitySet="update_cube">
+                <ScalarProperty Name="enable" ColumnName="enable" />
+                <ScalarProperty Name="database_name" ColumnName="database_name" />
+                <ScalarProperty Name="connectionstring" ColumnName="connectionstring" />
+                <ScalarProperty Name="cube_id" ColumnName="cube_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
