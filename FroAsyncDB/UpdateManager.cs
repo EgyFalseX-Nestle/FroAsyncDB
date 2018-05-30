@@ -36,7 +36,8 @@ namespace FroAsyncDB
         {
             string cols = item.src_cols + (item.update_op_dyn.Count == 0 ? string.Empty : $",{string.Join(",", (from q in item.update_op_dyn orderby q.src_order select q.src_col_name.Trim()))}");
             string filter = item.src_filter == null ? string.Empty : string.Format($"WHERE {item.src_filter}", (from q in item.update_op_dyn orderby q.src_order select q.src_col_val).ToArray());
-            string selectString = $"SELECT {cols} FROM {item.src_tbl_name} {filter} ORDER BY {string.Join(",", (from q in item.update_op_dyn orderby q.src_order select $"{q.src_col_name.Trim()} ASC"))}";
+            string orderby = item.update_op_dyn.Count == 0 ? string.Empty : $"ORDER BY {string.Join(",", (from q in item.update_op_dyn orderby q.src_order select $"{q.src_col_name.Trim()} ASC"))}";
+            string selectString = $"SELECT {cols} FROM {item.src_tbl_name} {filter} {orderby}";
             //LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Debug, $"SELECT : {selectString}", typeof(UpdateManager));
             DataTable data = FillTable(item.update_con_str.con_str, selectString);
             if (data.Rows.Count == 0)
@@ -80,6 +81,12 @@ namespace FroAsyncDB
                 bulkCopy.DestinationTableName = BulkTableName;
                 bulkCopy.BatchSize = BulkTable.Rows.Count;
                 bulkCopy.WriteToServer(BulkTable);
+                //clear data if required
+                if (item.clear_require == true)
+                {
+                    command.CommandText = $"DELETE FROM {item.dst_tbl_name}";
+                    command.ExecuteNonQuery();
+                }
                 //Merage tmp into distnation table
                 string convStr = string.Join(" , ", (from q in item.update_op_conv select $"Target.{q.col_name.Trim()} = {string.Format(q.conversion.Trim(), "Source." + q.col_name.Trim())}"));
                 string matchStr = string.Join(" AND ", (from q in item.update_op_key select $"Target.{q.dst_col_name.Trim()} = Source.{q.src_col_name.Trim()}"));
@@ -98,6 +105,7 @@ namespace FroAsyncDB
                 command.ExecuteNonQuery();
 
                 connection.Close();
+
                 item.update_op_log.Add(new update_op_log() { log_date = DateTime.Now, op_id = item.op_id, log_result = Types.LogResult.Succ.ToString(), eff_count = BulkTable.Rows.Count });
                 outPut = true;
             }

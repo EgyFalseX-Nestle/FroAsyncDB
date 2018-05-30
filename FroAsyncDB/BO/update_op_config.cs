@@ -37,6 +37,7 @@ namespace FroAsyncDB.BO
         public string dst_filter_val { get; set; }
         public bool enable { get; set; }
         public string op_desc { get; set; }
+        public Nullable<bool> clear_require { get; set; }
     
         public virtual update_con_str update_con_str { get; set; }
         public virtual update_con_str update_con_str1 { get; set; }

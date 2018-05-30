@@ -48,6 +48,7 @@
           <Property Name="dst_filter" Type="nvarchar" MaxLength="4000" />
           <Property Name="dst_filter_val" Type="nvarchar" MaxLength="4000" />
           <Property Name="enable" Type="bit" Nullable="false" />
+          <Property Name="clear_require" Type="bit" />
         </EntityType>
         <EntityType Name="update_op_conv">
           <Key>
@@ -239,6 +240,7 @@
           <Property Name="enable" Type="Boolean" Nullable="false" />
           <Property Name="op_desc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="update_op_log" Relationship="FroAsyncDBModel.FK_update_op_log_update_op_config" FromRole="update_op_config" ToRole="update_op_log" />
+          <Property Name="clear_require" Type="Boolean" />
         </EntityType>
         <EntityType Name="update_op_dyn">
           <Key>
@@ -428,6 +430,7 @@
           <EntitySetMapping Name="update_op_config">
             <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_config">
               <MappingFragment StoreEntitySet="update_op_config">
+                <ScalarProperty Name="clear_require" ColumnName="clear_require" />
                 <ScalarProperty Name="op_desc" ColumnName="op_desc" />
                 <ScalarProperty Name="enable" ColumnName="enable" />
                 <ScalarProperty Name="op_id" ColumnName="op_id" />

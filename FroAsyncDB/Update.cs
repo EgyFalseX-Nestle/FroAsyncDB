@@ -40,7 +40,7 @@ namespace FroAsyncDB
         {
             try
             {
-                LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Start Update ......................", typeof(Update));
+                LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Start updating data ......................", typeof(Update));
 
 
                 foreach (var item in _entities.update_op_config.OrderBy(o => o.op_order))
@@ -50,8 +50,8 @@ namespace FroAsyncDB
                     { }
                 }
                 _entities.SaveChanges();
-
-                foreach (update_cube cube in _entities.update_cube)
+                LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Start updating cubes ......................", typeof(Update));
+                foreach (update_cube cube in (from q in _entities.update_cube where q.enable == true select q))
                 {
                     Microsoft.AnalysisServices.Server server = new Microsoft.AnalysisServices.Server();
                     server.Connect(cube.connectionstring);
