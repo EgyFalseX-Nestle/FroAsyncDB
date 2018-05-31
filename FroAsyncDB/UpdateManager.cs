@@ -40,7 +40,8 @@ namespace FroAsyncDB
             string selectString = $"SELECT {cols} FROM {item.src_tbl_name} {filter} {orderby}";
             //LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Debug, $"SELECT : {selectString}", typeof(UpdateManager));
             DataTable data = FillTable(item.update_con_str.con_str, selectString);
-            if (data.Rows.Count == 0)
+            if (data.Rows.Count ==
+                0)
                 return true;
             if (UpdateBulk(item, data))
             {
@@ -91,7 +92,7 @@ namespace FroAsyncDB
                 string convStr = string.Join(" , ", (from q in item.update_op_conv select $"Target.{q.col_name.Trim()} = {string.Format(q.conversion.Trim(), "Source." + q.col_name.Trim())}"));
                 string matchStr = string.Join(" AND ", (from q in item.update_op_key select $"Target.{q.dst_col_name.Trim()} = Source.{q.src_col_name.Trim()}"));
                 string dst_cols = string.Join(",", (from q in item.update_op_conv select q.col_name.Trim()));
-                string src_cols = string.Join(",", (from q in item.update_op_conv select $"Source.{q.col_name.Trim()}"));
+                string src_cols = string.Join(",", (from q in item.update_op_conv select string.Format(q.conversion.Trim(), "Source." + q.col_name.Trim())));
                 command.CommandText = $"merge into {item.dst_tbl_name} as Target using {BulkTableName} AS Source ON {matchStr} when matched then UPDATE SET {convStr} " +
                     $"when not matched then INSERT ({dst_cols}) VALUES ({src_cols});";
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Debug, $"MERGE : {command.CommandText}", typeof(UpdateManager));
