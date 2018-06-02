@@ -1,12 +1,8 @@
-SELECT TOP 1000
-customer_chain, customer_number, customer_name, distribution_center, route_number, sales_district, sales_division, rsm, code26, a_r_chain_number, a_r_customer_number, first_served_date, l5, l7, customer_inactive, date_of_last_service, date_last_invoice
-, credit_limit, payment_type, terms_code, last_pay_date, credit_hold, credit_hold_date, customer_balance, customer_payment
-, price_group, consumer_price_group, promo_plan
-, channel_code, l4, l6
-, edit_d, edit_t
-FROM (SELECT 
-  CUSCUSCHN AS customer_chain
-, CUSCUSNUM AS customer_number
+SELECT customer_code,customer_name,distribution_center,route_number,sales_district,sales_division,rsm,code26,a_r_customer_code,first_served_date,l5,l7,customer_inactive,date_of_last_service,date_last_invoice,
+credit_limit,payment_type,terms_code,last_pay_date,credit_hold,credit_hold_date,customer_balance,customer_payment,price_group,consumer_price_group,promo_plan,channel_code,l4,l6
+FROM 
+(SELECT 
+  'E' + CAST(CUSCUSNUM AS NVARCHAR) + '-' + CAST(CUSCUSCHN AS NVARCHAR) AS customer_code
 , CUSCUSNAM AS customer_name
 , CASE WHEN CUSDFTDCN = 0 OR CUSDFTDCN = 999 THEN NULL ELSE CUSDFTDCN END AS distribution_center
 , CASE WHEN CUSRTENUM = 0 THEN NULL ELSE CUSRTENUM END AS route_number
@@ -14,8 +10,7 @@ FROM (SELECT
 , CASE WHEN CUSSLSDIV = 0 THEN NULL ELSE CUSSLSDIV END AS sales_division
 , CASE WHEN CUSREGNUM = 0 THEN NULL ELSE CUSREGNUM END AS rsm
 , CASE WHEN CUSCUSTYP = 0 THEN NULL ELSE CUSCUSTYP END AS code26
-, CUSARCHNM AS a_r_chain_number
-, CUSARCSNM AS a_r_customer_number
+, CASE WHEN CUSARCSNM = 0 AND CUSARCHNM = 0 THEN NULL ELSE 'E' + CAST(CUSARCSNM AS NVARCHAR) + '-' + CAST(CUSARCHNM AS NVARCHAR) END AS a_r_customer_code
 , CASE WHEN CUSFSRVDE = 0 THEN NULL ELSE convert(datetime,convert(char(8),CUSFSRVDE )) END AS first_served_date
 , CASE WHEN CUSBUSTYP = 0 THEN NULL ELSE CUSBUSTYP END AS l5
 , CASE WHEN CUSDPTMNT = 0 THEN NULL ELSE CUSDPTMNT END AS l7
