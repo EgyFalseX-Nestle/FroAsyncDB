@@ -49,13 +49,13 @@ namespace FroAsyncDB
                     if (UpdateManager.UpdateItem(item) == false)
                     {
                         //reset dyn fields
-                        BO.FroAsyncDBEntities entities = new FroAsyncDBEntities();
-                        foreach (update_op_dyn dyn in entities.update_op_dyn)
+                        _entities = new FroAsyncDBEntities();
+                        foreach (update_op_dyn dyn in _entities.update_op_dyn)
                         {
                             if (dyn.reset_on_error == true)
                                 dyn.src_col_val = "0";
                         }
-                        entities.SaveChanges();
+                        _entities.SaveChanges();
                         LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Reset after error ......................", typeof(Update));
                         if (_retryOnErrorTimes > 3)
                         { _retryOnErrorTimes = 0; return; }
