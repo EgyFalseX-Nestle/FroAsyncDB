@@ -68,6 +68,7 @@
           <Property Name="src_order" Type="int" />
           <Property Name="src_col_name" Type="nvarchar" MaxLength="50" />
           <Property Name="src_col_val" Type="nvarchar" MaxLength="50" />
+          <Property Name="reset_on_error" Type="bit" />
         </EntityType>
         <EntityType Name="update_op_key">
           <Key>
@@ -252,6 +253,7 @@
           <Property Name="src_col_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="src_col_val" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="update_op_config" Relationship="Self.FK_update_op_dyn_update_op_config" FromRole="update_op_dyn" ToRole="update_op_config" />
+          <Property Name="reset_on_error" Type="Boolean" DefaultValue="false" />
         </EntityType>
         <Association Name="FK_update_op_config_update_con_str">
           <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
@@ -451,6 +453,7 @@
           <EntitySetMapping Name="update_op_dyn">
             <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_dyn">
               <MappingFragment StoreEntitySet="update_op_dyn">
+                <ScalarProperty Name="reset_on_error" ColumnName="reset_on_error" />
                 <ScalarProperty Name="up_dyn_id" ColumnName="up_dyn_id" />
                 <ScalarProperty Name="op_id" ColumnName="op_id" />
                 <ScalarProperty Name="src_order" ColumnName="src_order" />

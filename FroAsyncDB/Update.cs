@@ -15,6 +15,7 @@ namespace FroAsyncDB
     {
         private static BO.FroAsyncDBEntities _entities = new BO.FroAsyncDBEntities();
         private static Timer _timner;
+        private static int _retryOnErrorTimes = 0;
 
         public static void Start()
         {
@@ -42,13 +43,30 @@ namespace FroAsyncDB
             {
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Start updating data ......................", typeof(Update));
 
-
                 foreach (var item in _entities.update_op_config.OrderBy(o => o.op_order))
                 {
                     if (!item.enable) continue;
-                    if (UpdateManager.UpdateItem(item))
-                    { }
+                    if (UpdateManager.UpdateItem(item) == false)
+                    {
+                        //reset dyn fields
+                        BO.FroAsyncDBEntities entities = new FroAsyncDBEntities();
+                        foreach (update_op_dyn dyn in entities.update_op_dyn)
+                        {
+                            if (dyn.reset_on_error == true)
+                                dyn.src_col_val = "0";
+                        }
+                        entities.SaveChanges();
+                        LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Reset after error ......................", typeof(Update));
+                        if (_retryOnErrorTimes > 3)
+                        { _retryOnErrorTimes = 0; return; }
+                        _retryOnErrorTimes++;
+                        _timner.Stop();
+                        _timner.Start();
+                        _timner_Elapsed(sender, e);
+                        return;
+                    }
                 }
+                _retryOnErrorTimes = 0;
                 _entities.SaveChanges();
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Start updating cubes ......................", typeof(Update));
                 foreach (update_cube cube in (from q in _entities.update_cube where q.enable == true select q))

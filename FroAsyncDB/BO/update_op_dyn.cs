@@ -14,11 +14,18 @@ namespace FroAsyncDB.BO
     
     public partial class update_op_dyn
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public update_op_dyn()
+        {
+            this.reset_on_error = false;
+        }
+    
         public int up_dyn_id { get; set; }
         public Nullable<int> op_id { get; set; }
         public Nullable<int> src_order { get; set; }
         public string src_col_name { get; set; }
         public string src_col_val { get; set; }
+        public Nullable<bool> reset_on_error { get; set; }
     
         public virtual update_op_config update_op_config { get; set; }
     }
