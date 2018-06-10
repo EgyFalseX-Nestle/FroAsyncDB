@@ -29,6 +29,7 @@
           <Property Name="connectionstring" Type="nvarchar" MaxLength="100" />
           <Property Name="database_name" Type="nvarchar" MaxLength="50" />
           <Property Name="enable" Type="bit" />
+          <Property Name="script" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="update_op_config">
           <Key>
@@ -412,6 +413,7 @@
           <Property Name="connectionstring" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="database_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="enable" Type="Boolean" />
+          <Property Name="script" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -505,6 +507,7 @@
           <EntitySetMapping Name="update_cube">
             <EntityTypeMapping TypeName="FroAsyncDBModel.update_cube">
               <MappingFragment StoreEntitySet="update_cube">
+                <ScalarProperty Name="script" ColumnName="script" />
                 <ScalarProperty Name="enable" ColumnName="enable" />
                 <ScalarProperty Name="database_name" ColumnName="database_name" />
                 <ScalarProperty Name="connectionstring" ColumnName="connectionstring" />

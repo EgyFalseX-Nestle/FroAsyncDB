@@ -73,11 +73,25 @@ namespace FroAsyncDB
                 {
                     Microsoft.AnalysisServices.Server server = new Microsoft.AnalysisServices.Server();
                     server.Connect(cube.connectionstring);
-                    Microsoft.AnalysisServices.Database database = server.Databases.FindByName(cube.database_name);
-                    if (database == null)
-                        continue;
-                    database.Process(Microsoft.AnalysisServices.ProcessType.ProcessFull);
-                    LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Cube {cube.database_name} Processed", typeof(Update));
+                    string script = cube.script;
+                    string msg = string.Empty;
+                    foreach (Microsoft.AnalysisServices.XmlaResult result in server.Execute(script))
+                    {
+                        foreach (Microsoft.AnalysisServices.XmlaMessage message in result.Messages)
+                            msg += message.Description + Environment.NewLine;
+                    }
+                    if (msg.Trim() == string.Empty)
+                        LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Cube {cube.database_name} Processed", typeof(Update));
+                    else
+                        LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Error, msg, typeof(Update));
+
+                    //Microsoft.AnalysisServices.Server server = new Microsoft.AnalysisServices.Server();
+                    //server.Connect(cube.connectionstring);
+                    //Microsoft.AnalysisServices.Database database = server.Databases.FindByName(cube.database_name);
+                    //if (database == null)
+                    //    continue;
+                    //database.Process(Microsoft.AnalysisServices.ProcessType.ProcessFull);
+                    //LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Cube {cube.database_name} Processed", typeof(Update));
                 }
 
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Success, $"Update successfull ......................", typeof(Update));

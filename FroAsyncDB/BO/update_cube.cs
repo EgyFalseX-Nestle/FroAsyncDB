@@ -18,5 +18,6 @@ namespace FroAsyncDB.BO
         public string connectionstring { get; set; }
         public string database_name { get; set; }
         public Nullable<bool> enable { get; set; }
+        public string script { get; set; }
     }
 }
