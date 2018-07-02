@@ -1,6 +1,8 @@
-SELECT customer_code,customer_name,distribution_center,route_number,sales_district,sales_division,rsm,code26,a_r_customer_code,first_served_date,l5,l7,customer_inactive,date_of_last_service,date_last_invoice,
-credit_limit,payment_type,terms_code,last_pay_date,credit_hold,credit_hold_date,customer_balance,customer_payment,price_group,consumer_price_group,promo_plan,channel_code,l4,l6
-FROM 
+SELECT 
+customer_code,customer_name,distribution_center,route_number,sales_district,sales_division,rsm,code26,a_r_customer_code,first_served_date,l5,l7,customer_inactive,date_of_last_service,date_last_invoice,
+credit_limit,payment_type,terms_code,last_pay_date,credit_hold,credit_hold_date,customer_balance,customer_payment,price_group,consumer_price_group,promo_plan,address,city,fax,phone,channel_code,l4,l6
+
+FROM
 (SELECT 
   'E' + CAST(CUSCUSNUM AS NVARCHAR) + '-' + CAST(CUSCUSCHN AS NVARCHAR) AS customer_code
 , CUSCUSNAM AS customer_name
@@ -30,6 +32,11 @@ FROM
 ,CPRPRCGRP AS price_group
 ,CPRPGPRTL AS consumer_price_group
 ,CPRPLNNUM AS promo_plan
+-- Address
+, [address].[address]
+, [address].city
+, [address].fax
+, [address].phone
 --Ext
 ,CASE WHEN RMCSEP.CSECHANNL = 0 THEN NULL ELSE RMCSEP.CSECHANNL END AS channel_code
 ,CASE WHEN RMCSEP.CSESUBDIV = 0 THEN NULL ELSE RMCSEP.CSESUBDIV END AS l4
@@ -52,4 +59,13 @@ FROM CXPRDDTA.RMCUSP
 LEFT OUTER JOIN CXPRDDTA.RMCARP ON CXPRDDTA.RMCUSP.CUSCUSCHN = CXPRDDTA.RMCARP.CARCUSCHN AND CXPRDDTA.RMCUSP.CUSCUSNUM = CXPRDDTA.RMCARP.CARCUSNUM
 LEFT OUTER JOIN CXPRDDTA.RMCPRP ON CXPRDDTA.RMCUSP.CUSCUSCHN = CXPRDDTA.RMCPRP.CPRCUSCHN AND CXPRDDTA.RMCUSP.CUSCUSNUM = CXPRDDTA.RMCPRP.CPRCUSNUM
 LEFT OUTER JOIN CXPRDDTA.RMCSEP ON CXPRDDTA.RMCUSP.CUSCUSCHN = CXPRDDTA.RMCSEP.CSECUSCHN AND CXPRDDTA.RMCUSP.CUSCUSNUM = CXPRDDTA.RMCSEP.CSECUSNUM
+LEFT OUTER JOIN 
+(
+SELECT CAFCUSCHN, CAFCUSNUM
+, RTRIM(CAFADRLN1) + ' ' + RTRIM(CAFADRLN2) + ' ' + RTRIM(CAFADRLN3) AS [address]
+, RTRIM(CAFADRCTY) AS city
+, RTRIM(CAFPHNNUM) AS phone
+, RTRIM(CAFFAXNUM) AS fax
+FROM CXPRDDTA.RMCAFP
+WHERE CAFADRTYP = 1) [address] ON CXPRDDTA.RMCUSP.CUSCUSCHN = [address].CAFCUSCHN AND CXPRDDTA.RMCUSP.CUSCUSNUM = [address].CAFCUSNUM
 ) T
