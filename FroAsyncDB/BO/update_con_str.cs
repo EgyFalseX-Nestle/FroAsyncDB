@@ -19,6 +19,7 @@ namespace FroAsyncDB.BO
         {
             this.update_op_config = new HashSet<update_op_config>();
             this.update_op_config1 = new HashSet<update_op_config>();
+            this.execute_sp = new HashSet<execute_sp>();
         }
     
         public int up_con_id { get; set; }
@@ -30,5 +31,7 @@ namespace FroAsyncDB.BO
         public virtual ICollection<update_op_config> update_op_config { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<update_op_config> update_op_config1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<execute_sp> execute_sp { get; set; }
     }
 }

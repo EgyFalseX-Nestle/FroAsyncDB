@@ -19,6 +19,8 @@
         <AssociationConnector Association="FroAsyncDBModel.FK_update_op_log_update_op_config" />
         <EntityTypeShape EntityType="FroAsyncDBModel.app_option" Width="1.5" PointX="9.125" PointY="2" />
         <EntityTypeShape EntityType="FroAsyncDBModel.update_cube" Width="1.5" PointX="8.375" PointY="4.75" />
+        <EntityTypeShape EntityType="FroAsyncDBModel.execute_sp" Width="1.5" PointX="8.375" PointY="7.75" />
+        <AssociationConnector Association="FroAsyncDBModel.FK_execute_sp_update_con_str" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

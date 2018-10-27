@@ -76,6 +76,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ConfigModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="BO\execute_sp.cs">
+      <DependentUpon>ConfigModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="BO\update_con_str.cs">
       <DependentUpon>ConfigModel.tt</DependentUpon>
     </Compile>

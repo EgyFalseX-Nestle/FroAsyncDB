@@ -31,13 +31,14 @@
   </appender>
 
   <appender name="SmtpAppender" type="log4net.Appender.SmtpAppender">
-    <to value="mohamed.aly.omer@mail.com" />
-    <from value="mohamed.aly.omar@mail.com" />
-    <subject value="Crash log" />
+    <to value="mohamed.aly.omer@gmail.com" />
+    <to value="mohamed.omarbayoumy@eg.froneri.com" />
+    <from value="mohamed.aly.omar@gmail.com" />
+    <subject value="FroAsyncDB Crash log - %message" />
     <smtpHost value="smtp.gmail.com" />
     <authentication value="Basic" />
     <port value="587" />
-    <username value="mohamed.aly.omar@mail.com" />
+    <username value="mohamed.aly.omar@gmail.com" />
     <password value="mohamedalyomar" />
     <bufferSize value="1" />
     <EnableSsl value="true"/>
@@ -46,7 +47,7 @@
       <threshold value="ERROR"/>
     </evaluator>
     <layout type="log4net.Layout.PatternLayout">
-      <!-- <conversionPattern value="%level %date - %message%newline" /> -->
+       <conversionPattern value="%level %date - %message%newline" /> 
       <param name="ConversionPattern" value="%-5p%d{ yyyy-MM-dd HH:mm:ss} – [%thread] %m method:%method %n stacktrace:%stacktrace{5} %n type:%type %n line: %line %n" />
     </layout>
   </appender>
@@ -54,8 +55,8 @@
   <root>
     <level value="DEBUG" />
     <appender-ref ref="UdpAppender" />
-    <appender-ref ref="RemotingAppender" />
+    <!--<appender-ref ref="RemotingAppender" />-->
     <appender-ref ref="LogFileAppender" />
-    <!--<appender-ref ref="SmtpAppender" />-->
+    <appender-ref ref="SmtpAppender" />
   </root>
 </log4net>

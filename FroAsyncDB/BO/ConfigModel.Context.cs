@@ -33,5 +33,6 @@ namespace FroAsyncDB.BO
         public virtual DbSet<update_op_log> update_op_log { get; set; }
         public virtual DbSet<app_option> app_option { get; set; }
         public virtual DbSet<update_cube> update_cube { get; set; }
+        public virtual DbSet<execute_sp> execute_sp { get; set; }
     }
 }

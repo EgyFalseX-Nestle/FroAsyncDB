@@ -10,6 +10,9 @@ namespace FroAsyncDB
     {
         static void Main(string[] args)
         {
+            //LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Error, "Test ERRORRRRRRRR....", typeof(Program));
+            //Console.Read();
+            //return;
             Update.Start();
         }
     }

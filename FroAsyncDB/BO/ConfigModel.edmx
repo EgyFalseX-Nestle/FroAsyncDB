@@ -12,6 +12,15 @@
           <Property Name="option_id" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="option_value" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="execute_sp">
+          <Key>
+            <PropertyRef Name="exec_id" />
+          </Key>
+          <Property Name="exec_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sp_name" Type="nvarchar" MaxLength="50" />
+          <Property Name="enable" Type="bit" />
+          <Property Name="up_con_id" Type="int" />
+        </EntityType>
         <EntityType Name="update_con_str">
           <Key>
             <PropertyRef Name="up_con_id" />
@@ -28,8 +37,8 @@
           <Property Name="cube_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="connectionstring" Type="nvarchar" MaxLength="100" />
           <Property Name="database_name" Type="nvarchar" MaxLength="50" />
-          <Property Name="enable" Type="bit" />
           <Property Name="script" Type="nvarchar(max)" />
+          <Property Name="enable" Type="bit" />
         </EntityType>
         <EntityType Name="update_op_config">
           <Key>
@@ -91,6 +100,18 @@
           <Property Name="eff_count" Type="int" />
           <Property Name="log_msg" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <Association Name="FK_execute_sp_update_con_str">
+          <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
+          <End Role="execute_sp" Type="Self.execute_sp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_con_str">
+              <PropertyRef Name="up_con_id" />
+            </Principal>
+            <Dependent Role="execute_sp">
+              <PropertyRef Name="up_con_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_update_op_config_update_con_str">
           <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
           <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="*" />
@@ -171,6 +192,7 @@
         </Association>
         <EntityContainer Name="FroAsyncDBModelStoreContainer">
           <EntitySet Name="app_option" EntityType="Self.app_option" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="execute_sp" EntityType="Self.execute_sp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_con_str" EntityType="Self.update_con_str" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_cube" EntityType="Self.update_cube" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_op_config" EntityType="Self.update_op_config" Schema="dbo" store:Type="Tables" />
@@ -178,6 +200,10 @@
           <EntitySet Name="update_op_dyn" EntityType="Self.update_op_dyn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_op_key" EntityType="Self.update_op_key" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_op_log" EntityType="Self.update_op_log" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_execute_sp_update_con_str" Association="Self.FK_execute_sp_update_con_str">
+            <End Role="update_con_str" EntitySet="update_con_str" />
+            <End Role="execute_sp" EntitySet="execute_sp" />
+          </AssociationSet>
           <AssociationSet Name="FK_update_op_config_update_con_str" Association="Self.FK_update_op_config_update_con_str">
             <End Role="update_con_str" EntitySet="update_con_str" />
             <End Role="update_op_config" EntitySet="update_op_config" />
@@ -217,6 +243,7 @@
           <NavigationProperty Name="update_op_config" Relationship="Self.FK_update_op_config_update_con_str" FromRole="update_con_str" ToRole="update_op_config" />
           <NavigationProperty Name="update_op_config1" Relationship="Self.FK_update_op_config_update_con_str1" FromRole="update_con_str" ToRole="update_op_config" />
           <Property Name="db_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="execute_sp" Relationship="FroAsyncDBModel.FK_execute_sp_update_con_str" FromRole="update_con_str" ToRole="execute_sp" />
         </EntityType>
         <EntityType Name="update_op_config">
           <Key>
@@ -327,6 +354,11 @@
           </AssociationSet>
           <EntitySet Name="app_option" EntityType="FroAsyncDBModel.app_option" />
           <EntitySet Name="update_cube" EntityType="FroAsyncDBModel.update_cube" />
+          <EntitySet Name="execute_sp" EntityType="FroAsyncDBModel.execute_sp" />
+          <AssociationSet Name="FK_execute_sp_update_con_str" Association="FroAsyncDBModel.FK_execute_sp_update_con_str">
+            <End Role="update_con_str" EntitySet="update_con_str" />
+            <End Role="execute_sp" EntitySet="execute_sp" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="update_op_key">
           <Key>
@@ -415,6 +447,28 @@
           <Property Name="enable" Type="Boolean" />
           <Property Name="script" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="execute_sp">
+          <Key>
+            <PropertyRef Name="exec_id" />
+          </Key>
+          <Property Name="exec_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sp_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="enable" Type="Boolean" />
+          <Property Name="up_con_id" Type="Int32" />
+          <NavigationProperty Name="update_con_str" Relationship="FroAsyncDBModel.FK_execute_sp_update_con_str" FromRole="execute_sp" ToRole="update_con_str" />
+        </EntityType>
+        <Association Name="FK_execute_sp_update_con_str">
+          <End Type="FroAsyncDBModel.update_con_str" Role="update_con_str" Multiplicity="0..1" />
+          <End Type="FroAsyncDBModel.execute_sp" Role="execute_sp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="update_con_str">
+              <PropertyRef Name="up_con_id" />
+            </Principal>
+            <Dependent Role="execute_sp">
+              <PropertyRef Name="up_con_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -512,6 +566,16 @@
                 <ScalarProperty Name="database_name" ColumnName="database_name" />
                 <ScalarProperty Name="connectionstring" ColumnName="connectionstring" />
                 <ScalarProperty Name="cube_id" ColumnName="cube_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="execute_sp">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.execute_sp">
+              <MappingFragment StoreEntitySet="execute_sp">
+                <ScalarProperty Name="up_con_id" ColumnName="up_con_id" />
+                <ScalarProperty Name="enable" ColumnName="enable" />
+                <ScalarProperty Name="sp_name" ColumnName="sp_name" />
+                <ScalarProperty Name="exec_id" ColumnName="exec_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

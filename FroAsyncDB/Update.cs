@@ -68,6 +68,21 @@ namespace FroAsyncDB
                 }
                 _retryOnErrorTimes = 0;
                 _entities.SaveChanges();
+
+                LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Start executing stored procedure ......................", typeof(Update));
+                SqlConnection connection = new SqlConnection(string.Empty);
+                SqlCommand command = new SqlCommand(string.Empty, connection) { CommandTimeout = 0 };
+                foreach (execute_sp sp in (from q in _entities.execute_sp where q.enable == true select q))
+                {
+                    connection.ConnectionString = sp.update_con_str.con_str;
+                    connection.Open();
+                    command.CommandText = sp.sp_name;
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                    LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"sp {sp.sp_name} executed", typeof(Update));
+                }
+                connection.Dispose(); command.Dispose();
+
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Start updating cubes ......................", typeof(Update));
                 foreach (update_cube cube in (from q in _entities.update_cube where q.enable == true select q))
                 {
@@ -93,6 +108,7 @@ namespace FroAsyncDB
                     //database.Process(Microsoft.AnalysisServices.ProcessType.ProcessFull);
                     //LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Cube {cube.database_name} Processed", typeof(Update));
                 }
+                
 
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Success, $"Update successfull ......................", typeof(Update));
 
