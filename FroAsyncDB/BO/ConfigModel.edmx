@@ -18,8 +18,17 @@
           </Key>
           <Property Name="exec_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="sp_name" Type="nvarchar" MaxLength="50" />
-          <Property Name="enable" Type="bit" />
           <Property Name="up_con_id" Type="int" />
+          <Property Name="enable" Type="bit" />
+        </EntityType>
+        <EntityType Name="execute_sp_log">
+          <Key>
+            <PropertyRef Name="sp_log" />
+          </Key>
+          <Property Name="sp_log" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="log_date" Type="date" />
+          <Property Name="exec_id" Type="int" />
+          <Property Name="log_result" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="update_con_str">
           <Key>
@@ -79,6 +88,7 @@
           <Property Name="src_col_name" Type="nvarchar" MaxLength="50" />
           <Property Name="src_col_val" Type="nvarchar" MaxLength="50" />
           <Property Name="reset_on_error" Type="bit" />
+          <Property Name="reset_val" Type="int" />
         </EntityType>
         <EntityType Name="update_op_key">
           <Key>
@@ -179,7 +189,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_update_op_log_update_op_config">
-          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="0..1" />
+          <End Role="update_op_config" Type="Self.update_op_config" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="update_op_log" Type="Self.update_op_log" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="update_op_config">
@@ -190,9 +202,22 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_update_sp_log_execute_sp">
+          <End Role="execute_sp" Type="Self.execute_sp" Multiplicity="0..1" />
+          <End Role="execute_sp_log" Type="Self.execute_sp_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="execute_sp">
+              <PropertyRef Name="exec_id" />
+            </Principal>
+            <Dependent Role="execute_sp_log">
+              <PropertyRef Name="exec_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="FroAsyncDBModelStoreContainer">
           <EntitySet Name="app_option" EntityType="Self.app_option" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="execute_sp" EntityType="Self.execute_sp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="execute_sp_log" EntityType="Self.execute_sp_log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_con_str" EntityType="Self.update_con_str" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_cube" EntityType="Self.update_cube" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="update_op_config" EntityType="Self.update_op_config" Schema="dbo" store:Type="Tables" />
@@ -227,6 +252,10 @@
           <AssociationSet Name="FK_update_op_log_update_op_config" Association="Self.FK_update_op_log_update_op_config">
             <End Role="update_op_config" EntitySet="update_op_config" />
             <End Role="update_op_log" EntitySet="update_op_log" />
+          </AssociationSet>
+          <AssociationSet Name="FK_update_sp_log_execute_sp" Association="Self.FK_update_sp_log_execute_sp">
+            <End Role="execute_sp" EntitySet="execute_sp" />
+            <End Role="execute_sp_log" EntitySet="execute_sp_log" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -282,6 +311,7 @@
           <Property Name="src_col_val" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="update_op_config" Relationship="Self.FK_update_op_dyn_update_op_config" FromRole="update_op_dyn" ToRole="update_op_config" />
           <Property Name="reset_on_error" Type="Boolean" DefaultValue="false" />
+          <Property Name="reset_val" Type="Int32" />
         </EntityType>
         <Association Name="FK_update_op_config_update_con_str">
           <End Role="update_con_str" Type="Self.update_con_str" Multiplicity="0..1" />
@@ -358,6 +388,11 @@
           <AssociationSet Name="FK_execute_sp_update_con_str" Association="FroAsyncDBModel.FK_execute_sp_update_con_str">
             <End Role="update_con_str" EntitySet="update_con_str" />
             <End Role="execute_sp" EntitySet="execute_sp" />
+          </AssociationSet>
+          <EntitySet Name="execute_sp_log" EntityType="FroAsyncDBModel.execute_sp_log" />
+          <AssociationSet Name="FK_update_sp_log_execute_sp" Association="FroAsyncDBModel.FK_update_sp_log_execute_sp">
+            <End Role="execute_sp" EntitySet="execute_sp" />
+            <End Role="execute_sp_log" EntitySet="execute_sp_log" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="update_op_key">
@@ -456,6 +491,7 @@
           <Property Name="enable" Type="Boolean" />
           <Property Name="up_con_id" Type="Int32" />
           <NavigationProperty Name="update_con_str" Relationship="FroAsyncDBModel.FK_execute_sp_update_con_str" FromRole="execute_sp" ToRole="update_con_str" />
+          <NavigationProperty Name="execute_sp_log" Relationship="FroAsyncDBModel.FK_update_sp_log_execute_sp" FromRole="execute_sp" ToRole="execute_sp_log" />
         </EntityType>
         <Association Name="FK_execute_sp_update_con_str">
           <End Type="FroAsyncDBModel.update_con_str" Role="update_con_str" Multiplicity="0..1" />
@@ -466,6 +502,28 @@
             </Principal>
             <Dependent Role="execute_sp">
               <PropertyRef Name="up_con_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="execute_sp_log">
+          <Key>
+            <PropertyRef Name="sp_log" />
+          </Key>
+          <Property Name="sp_log" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="log_date" Type="DateTime" Precision="0" />
+          <Property Name="exec_id" Type="Int32" />
+          <Property Name="log_result" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="execute_sp" Relationship="FroAsyncDBModel.FK_update_sp_log_execute_sp" FromRole="execute_sp_log" ToRole="execute_sp" />
+        </EntityType>
+        <Association Name="FK_update_sp_log_execute_sp">
+          <End Type="FroAsyncDBModel.execute_sp" Role="execute_sp" Multiplicity="0..1" />
+          <End Type="FroAsyncDBModel.execute_sp_log" Role="execute_sp_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="execute_sp">
+              <PropertyRef Name="exec_id" />
+            </Principal>
+            <Dependent Role="execute_sp_log">
+              <PropertyRef Name="exec_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -509,6 +567,7 @@
           <EntitySetMapping Name="update_op_dyn">
             <EntityTypeMapping TypeName="FroAsyncDBModel.update_op_dyn">
               <MappingFragment StoreEntitySet="update_op_dyn">
+                <ScalarProperty Name="reset_val" ColumnName="reset_val" />
                 <ScalarProperty Name="reset_on_error" ColumnName="reset_on_error" />
                 <ScalarProperty Name="up_dyn_id" ColumnName="up_dyn_id" />
                 <ScalarProperty Name="op_id" ColumnName="op_id" />
@@ -576,6 +635,16 @@
                 <ScalarProperty Name="enable" ColumnName="enable" />
                 <ScalarProperty Name="sp_name" ColumnName="sp_name" />
                 <ScalarProperty Name="exec_id" ColumnName="exec_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="execute_sp_log">
+            <EntityTypeMapping TypeName="FroAsyncDBModel.execute_sp_log">
+              <MappingFragment StoreEntitySet="execute_sp_log">
+                <ScalarProperty Name="log_result" ColumnName="log_result" />
+                <ScalarProperty Name="exec_id" ColumnName="exec_id" />
+                <ScalarProperty Name="log_date" ColumnName="log_date" />
+                <ScalarProperty Name="sp_log" ColumnName="sp_log" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

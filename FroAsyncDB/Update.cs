@@ -15,6 +15,7 @@ namespace FroAsyncDB
     {
         private static BO.FroAsyncDBEntities _entities = new BO.FroAsyncDBEntities();
         private static Timer _timner;
+
         private static int _retryOnErrorTimes = 0;
 
         public static void Start()
@@ -38,6 +39,36 @@ namespace FroAsyncDB
         }
 
         private static void _timner_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            FroAsyncService.FroAsyncSrvClient srvClient = new FroAsyncService.FroAsyncSrvClient();
+
+            LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Request updating data ......................", typeof(Update));
+            foreach (var item in _entities.update_op_config.OrderBy(o => o.op_order))
+            {
+                if (!item.enable) continue;
+                Task<string> result = srvClient.AddTaskAsync(FroAsyncService.FroAyncTypeTaskType.UpdateData, item.op_id, "");
+                LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"{item.op_desc} - {result.Result}", typeof(Update));
+            }
+
+            LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Request executing stored procedure ......................", typeof(Update));
+            foreach (execute_sp sp in (from q in _entities.execute_sp where q.enable == true select q))
+            {
+                Task<string> result = srvClient.AddTaskAsync(FroAsyncService.FroAyncTypeTaskType.ExecuteSP, sp.exec_id, "");
+                LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"{sp.sp_name} - {result.Result}", typeof(Update));
+            }
+
+            LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Request updating cubes ......................", typeof(Update));
+            foreach (update_cube cube in (from q in _entities.update_cube where q.enable == true select q))
+            {
+                Task<string> result = srvClient.AddTaskAsync(FroAsyncService.FroAyncTypeTaskType.UpdateCube, cube.cube_id, "");
+                LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"{cube.database_name} - {result.Result}", typeof(Update));
+            }
+
+            LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Success, $"Requests posted successfully ......................", typeof(Update));
+
+        }
+
+        private static void _timner_Elapsed_(object sender, ElapsedEventArgs e)
         {
             try
             {
@@ -99,16 +130,8 @@ namespace FroAsyncDB
                         LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Cube {cube.database_name} Processed", typeof(Update));
                     else
                         LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Error, msg, typeof(Update));
-
-                    //Microsoft.AnalysisServices.Server server = new Microsoft.AnalysisServices.Server();
-                    //server.Connect(cube.connectionstring);
-                    //Microsoft.AnalysisServices.Database database = server.Databases.FindByName(cube.database_name);
-                    //if (database == null)
-                    //    continue;
-                    //database.Process(Microsoft.AnalysisServices.ProcessType.ProcessFull);
-                    //LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Cube {cube.database_name} Processed", typeof(Update));
                 }
-                
+
 
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Success, $"Update successfull ......................", typeof(Update));
 

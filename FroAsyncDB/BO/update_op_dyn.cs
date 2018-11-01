@@ -26,6 +26,7 @@ namespace FroAsyncDB.BO
         public string src_col_name { get; set; }
         public string src_col_val { get; set; }
         public Nullable<bool> reset_on_error { get; set; }
+        public Nullable<int> reset_val { get; set; }
     
         public virtual update_op_config update_op_config { get; set; }
     }

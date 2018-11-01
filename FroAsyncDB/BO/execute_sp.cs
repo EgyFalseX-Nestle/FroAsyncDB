@@ -14,11 +14,19 @@ namespace FroAsyncDB.BO
     
     public partial class execute_sp
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public execute_sp()
+        {
+            this.execute_sp_log = new HashSet<execute_sp_log>();
+        }
+    
         public int exec_id { get; set; }
         public string sp_name { get; set; }
         public Nullable<bool> enable { get; set; }
         public Nullable<int> up_con_id { get; set; }
     
         public virtual update_con_str update_con_str { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<execute_sp_log> execute_sp_log { get; set; }
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="540ed30a-711a-495c-82bd-60309d7e2d7c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost/FroNavi/FroAsyncService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="FroAsyncService.xsd" MetadataType="Schema" ID="0d45b91f-fa4c-4c54-b2a9-bad207039409" SourceId="1" SourceUrl="http://falsex-pc/FroNavi/FroAsyncService.svc?xsd=xsd2" />
+    <MetadataFile FileName="FroAsyncService.disco" MetadataType="Disco" ID="e725c40b-42a9-4396-9ab0-bb97527f3d34" SourceId="1" SourceUrl="http://falsex-pc/FroNavi/FroAsyncService.svc?disco" />
+    <MetadataFile FileName="FroAsyncService1.xsd" MetadataType="Schema" ID="23936d21-76f0-471f-bc5c-6fe663c04dbb" SourceId="1" SourceUrl="http://falsex-pc/FroNavi/FroAsyncService.svc?xsd=xsd0" />
+    <MetadataFile FileName="FroAsyncService2.xsd" MetadataType="Schema" ID="d3cb321b-6341-4b32-a86f-a9a20fa7dbb3" SourceId="1" SourceUrl="http://falsex-pc/FroNavi/FroAsyncService.svc?xsd=xsd1" />
+    <MetadataFile FileName="FroAsyncSrv.wsdl" MetadataType="Wsdl" ID="3b004b82-19cf-4766-a855-4a6ce4577af7" SourceId="1" SourceUrl="http://falsex-pc/FroNavi/FroAsyncService.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
