@@ -48,6 +48,7 @@ namespace FroAsyncDB
                 if (!item.enable) continue;
                 Task<string> result = srvClient.AddTaskAsync(FroAsyncService.FroAyncTypeTaskType.UpdateData, item.op_id, "");
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"{item.op_desc} - {result.Result}", typeof(Update));
+                System.Threading.Thread.Sleep(500);
             }
 
             LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Request executing stored procedure ......................", typeof(Update));
@@ -55,6 +56,7 @@ namespace FroAsyncDB
             {
                 Task<string> result = srvClient.AddTaskAsync(FroAsyncService.FroAyncTypeTaskType.ExecuteSP, sp.exec_id, "");
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"{sp.sp_name} - {result.Result}", typeof(Update));
+                System.Threading.Thread.Sleep(500);
             }
 
             LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"Request updating cubes ......................", typeof(Update));
@@ -62,10 +64,10 @@ namespace FroAsyncDB
             {
                 Task<string> result = srvClient.AddTaskAsync(FroAsyncService.FroAyncTypeTaskType.UpdateCube, cube.cube_id, "");
                 LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Log, $"{cube.database_name} - {result.Result}", typeof(Update));
+                System.Threading.Thread.Sleep(500);
             }
 
             LogsManager.DefaultInstance.LogMsg(LogsManager.LogType.Success, $"Requests posted successfully ......................", typeof(Update));
-
         }
 
         private static void _timner_Elapsed_(object sender, ElapsedEventArgs e)
